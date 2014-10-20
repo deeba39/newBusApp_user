@@ -1,0 +1,129 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.4.min.css"/>
+<script src ="jquery-1.10.2.js"></script>
+<script src ="jquery.mobile-1.4.4.min.js"></script>
+<script src ="jquery.mobile-1.4.4.js"></script>
+<script type="text/javascript" src ="jquery.mobile-1.4.4.min.map"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+<script type="text/javascript" src="Barcode.js"></script>
+<!-- <style type="text/css">
+  	#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 12pt}
+    </style> -->
+<script>
+
+			function syncAjax(u){
+			console.log(u);
+				var obj=$.ajax(
+					{url:u,
+					 async:false
+					 }
+				);
+				console.log(obj.responseText);
+				return $.parseJSON(obj.responseText);
+				
+			}
+
+
+ $(document).ready(function(){
+
+ $("#reload").click(function(){
+ r=syncAjax("http://50.63.128.135/~csashesi/class2015/aba-debrah/bus_app_user/busapp_action.php?cmd=1&id=1");
+ $("#results").text(r.Seats.Number_of_seats);
+ $("#resultLocation").text(r.Seats.Location);
+
+ });
+
+
+$("#book").click(function(){
+var name = $("#name").val();
+var location = $("#set_location").val();
+var time = $("#time").val();
+ r=syncAjax("http://50.63.128.135/~csashesi/class2015/aba-debrah/bus_app_user/busapp_action.php?cmd=6&name="+name+"&location="+location+"&time="+time);
+$("#msg").text(r.message);
+
+ });
+
+
+ $("#getCode").click(function(){
+ var name = ($("#inputname").val());
+ r=syncAjax("http://50.63.128.135/~csashesi/class2015/aba-debrah/bus_app_user/busapp_action.php?cmd=7&name="+name);
+ $("#inputdata").text(r.reserve.barcodeVal);
+});
+ });
+</script>
+
+</head>
+<body>
+<!--UserMainPage-->
+<div data-role="page" id="home" data-theme="a">
+<div data-role="header" data-position="fixed">
+<p align="center" style='font-size:190%'><img src="images/school-bus.gif" alt="School Bus" align="center" 
+	class="ui-btn-left" height="70" width="70"></img>CatchTheBusz</p>
+</div>
+<div role="main" class="ui-content" align="center">
+<br> 
+<button id="reload" data-icon="refresh">RELOAD</button>
+<h2 id='location'>Bus Location:</h2>
+<div  id="resultLocation" style='font-size:150%'>0</div>
+<BR>
+<p id='seats' style='font-size:200%'></p>
+<h2 id='location'>Available Seats:</h2>
+<div  id="results" style='font-size:190%'>0</div>
+</div>
+
+<div data-role="footer">
+<div data-role="navbar">
+	<ul>	
+	<li><a href="#home" data-transition="flip" data-icon="home" class="ui-btn-active ui-disabled">Home</a></li>
+	<li><a	href="#reserve" data-transition="flip" data-icon="carat-r">Reservations</a></li></ul>
+</div> 
+</div>
+
+</div>
+
+<!--Reservations-->
+<div data-role="page" id="reserve" data-theme="a">
+<div data-role="header">
+	<p align="center" style='font-size:190%'><img src="images/school-bus.gif" alt="School Bus" align="center" 
+	class="ui-btn-left" height="70" width="70"></img>CatchTheBusz</p>
+</div>
+
+<div role="main" class="ui-content" align="center">
+<p id='reserve' style='font-size:300%'></p>
+<div data-role="fieldcontain">
+    <label for="name">Name:</label>
+    <input type="text" id="name"  placeholder="Blossom Parker"  />
+    <label for="name">Location:</label>
+    <input type="text" id="set_location"  placeholder="Accra Mall"  />
+    <label for="name">Time:</label>
+    <input type="text" id="time" placeholder="12:30"  />
+</div>
+<button id="book">BOOK</button>
+<div id="msg"></div>
+<input type="text" id='inputname' value="" align="center" placeholder="Enter your name again to get your code"/>
+<div id='inputdata'></div>
+<button id="getCode" onclick="writeBC(document.getElementById('inputdata').innerHTML)">Press TWICE to get code</button>
+<script type="text/javascript">
+function writeBC(s)
+{
+    var bc = new AtalasoftBarcode39(s);
+    document.getElementById('bcArea').innerHTML = bc.getBarcode(50, 2, 8);
+}
+</script>
+<div id="bcArea"></div>
+</div>
+
+
+
+<div data-role="footer">
+<div data-role="navbar">
+	<ul>	
+	<li><a href="#home" data-transition="flip" data-icon="home">Home</a></li>
+	<li><a	href="#reserve" data-transition="flip" class="ui-btn-active ui-disabled" data-icon="carat-r">Reservations</a></li></ul>
+</div>
+</div>
+
+</div>
+</body>
+</html>
